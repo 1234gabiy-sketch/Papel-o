@@ -11,44 +11,54 @@
 <section id="login">
   <img src="logo.svg" class="logo" alt="Logo do Papelão">
   <h1>Papelão</h1>
-  <p>A rede social de 3 pessoas. Sim, três.</p>
-  <div id="perfis"></div>
-  <input id="pin" type="password" inputmode="numeric" placeholder="PIN (dica: é 1234)">
+  <p id="vagas"></p>
+  <input id="nome" placeholder="Nome" autocomplete="username" maxlength="16">
+  <input id="pass" type="password" placeholder="Palavra-passe" autocomplete="current-password">
   <button id="entrar" class="main">Entrar</button>
+  <button id="aba" class="link">Criar conta nova</button>
   <p id="err"></p>
 </section>
 
 <main id="app" hidden>
-  <header><img src="logo.svg" alt=""><b>Papelão</b><button id="sair">Sair</button></header>
-  <div id="feed"></div>
-  <button id="novo" class="main fab">+ Postar</button>
+  <header>
+    <img src="logo.svg" alt=""><b>Papelão</b>
+    <button id="novo" class="main">+ Postar</button>
+    <button id="meu">Perfil</button>
+  </header>
+  <div id="stage"></div>
 </main>
+
+<section id="perfil" aria-label="Perfil">
+  <div class="top"><button id="pfechar">Fechar ↑</button><button id="sair" hidden>Sair</button></div>
+  <h2 id="pnome"></h2>
+  <p id="pstats"></p>
+  <div id="grelha"></div>
+</section>
 
 <aside id="drawer" hidden>
   <div class="sheet">
     <div class="top"><b>Comentários</b><button id="fechar">Fechar</button></div>
     <ul id="clist"></ul>
-    <div class="row"><input id="ctexto" placeholder="Escreve algo (sê simpático, são só 3)"><button id="cenviar" class="main">Enviar</button></div>
+    <div class="row"><input id="ctexto" maxlength="200" placeholder="Escreve algo"><button id="cenviar" class="main">Enviar</button></div>
   </div>
 </aside>
 
 <div id="modal" hidden>
   <div class="sheet">
     <div class="top"><b>Novo post</b><button id="mfechar">Cancelar</button></div>
-    <textarea id="mtexto" maxlength="140" placeholder="O que se passa na tua cabeça? (140 letras)"></textarea>
-    <label>Cor do fundo <input id="mhue" type="range" min="0" max="360" value="280"></label>
-    <label>Vídeo (opcional, só dura até fechares o separador) <input id="mvideo" type="file" accept="video/*"></label>
+    <textarea id="mtexto" maxlength="140" placeholder="Legenda (140 letras)"></textarea>
+    <label>Vídeo ou imagem (máx. 60 MB)<input id="mficheiro" type="file" accept="video/mp4,video/webm,video/quicktime,image/jpeg,image/png,image/gif,image/webp"></label>
+    <label>Cor do fundo<input id="mhue" type="range" min="0" max="360" value="280"></label>
     <button id="mpostar" class="main">Publicar</button>
   </div>
 </div>
 
 <div id="toast"></div>
 
-<script src="storage.js"></script>
-<script src="data.js"></script>
+<script src="api.js"></script>
 <script src="auth.js"></script>
 <script src="feed.js"></script>
-<script src="comments.js"></script>
+<script src="profile.js"></script>
 <script src="upload.js"></script>
 <script src="app.js"></script>
 </body>

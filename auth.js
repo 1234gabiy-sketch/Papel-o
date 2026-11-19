@@ -1,26 +1,26 @@
 const Auth = {
-  escolhido: null,
-  user() { return USERS.find(u => u.id === DB.load("sessao", null)) || null; },
-  desenhar() {
-    const box = document.getElementById("perfis");
-    box.innerHTML = "";
-    USERS.forEach(u => {
-      const b = document.createElement("button");
-      b.className = "perfil" + (this.escolhido === u.id ? " sel" : "");
-      b.textContent = u.emoji;
-      const s = document.createElement("small");
-      s.textContent = u.nome;
-      b.appendChild(s);
-      b.onclick = () => { this.escolhido = u.id; this.desenhar(); };
-      box.appendChild(b);
-    });
+  me: null,
+  registo: false,
+  async init() {
+    try { const r = await API.get("/api/eu"); this.me = r.me; this.vagas(r.vagas); } catch (e) {}
+    return this.me;
   },
-  entrar() {
-    const err = document.getElementById("err");
-    if (!this.escolhido) { err.textContent = escolhe(TROLL.semPerfil); return false; }
-    if (document.getElementById("pin").value !== PIN) { err.textContent = escolhe(TROLL.pinErrado); return false; }
-    DB.save("sessao", this.escolhido);
-    return true;
+  vagas(n) {
+    $("vagas").textContent = n > 0 ? "Vagas livres: " + n + " de 3. Corre." : "Lista cheia: 3 de 3. Só entra quem já tem conta.";
   },
-  sair() { DB.save("sessao", null); }
+  aba(registo) {
+    this.registo = registo;
+    $("entrar").textContent = registo ? "Criar conta" : "Entrar";
+    $("aba").textContent = registo ? "Já tenho conta" : "Criar conta nova";
+    $("err").textContent = "";
+  },
+  async enviar() {
+    try {
+      const r = await API.post(this.registo ? "/api/registo" : "/api/login", { nome: $("nome").value.trim(), pass: $("pass").value });
+      API.guardar(r.token);
+      this.me = { nome: r.nome, emoji: r.emoji };
+      return true;
+    } catch (e) { $("err").textContent = e.message; return false; }
+  },
+  sair() { API.guardar(""); location.reload(); }
 };

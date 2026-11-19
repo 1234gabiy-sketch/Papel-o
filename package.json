@@ -1,0 +1,7 @@
+{
+  "name": "papelao",
+  "version": "2.0.0",
+  "description": "Rede social de 3 pessoas",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
