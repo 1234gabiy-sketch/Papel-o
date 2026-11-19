@@ -1,28 +1,21 @@
 const Upload = {
-  abrir() { document.getElementById("modal").hidden = false; document.getElementById("mtexto").focus(); },
-  fechar() {
-    document.getElementById("modal").hidden = true;
-    document.getElementById("mtexto").value = "";
-    document.getElementById("mvideo").value = "";
-  },
-  postar() {
-    const texto = document.getElementById("mtexto").value.trim();
-    if (!texto) { toast(escolhe(TROLL.semTexto)); return; }
-    const ficheiro = document.getElementById("mvideo").files[0];
-    const novo = {
-      id: Date.now(),
-      user: Auth.user().id,
-      texto,
-      hue: +document.getElementById("mhue").value,
-      likes: [],
-      comentarios: []
-    };
-    if (ficheiro) novo.video = URL.createObjectURL(ficheiro);
-    Feed.posts.unshift(novo);
-    Feed.guardar();
-    this.fechar();
-    Feed.desenhar();
-    document.getElementById("feed").scrollTop = 0;
-    toast(escolhe(TROLL.postou));
+  abrir() { $("modal").hidden = false; $("mtexto").focus(); },
+  fechar() { $("modal").hidden = true; $("mtexto").value = ""; $("mficheiro").value = ""; },
+  async postar() {
+    const texto = $("mtexto").value.trim(), f = $("mficheiro").files[0];
+    if (!texto && !f) { toast(escolhe(TROLL.semTexto)); return; }
+    if (f && f.size > 60 * 1024 * 1024) { toast("Esse ficheiro é enorme. Máximo 60 MB."); return; }
+    const b = $("mpostar");
+    b.disabled = true; b.textContent = "A enviar...";
+    try {
+      const ficheiro = f ? (await API.enviar(f)).ficheiro : null;
+      await API.post("/api/posts", { texto, ficheiro, hue: +$("mhue").value });
+      this.fechar();
+      await Feed.carregar();
+      Feed.i = 0;
+      Feed.desenhar("");
+      toast(escolhe(TROLL.postou));
+    } catch (e) { toast(e.message); }
+    b.disabled = false; b.textContent = "Publicar";
   }
 };
