@@ -7,15 +7,17 @@ const Upload = {
     if (f && f.size > 60 * 1024 * 1024) { toast("Esse ficheiro é enorme. Máximo 60 MB."); return; }
     const b = $("mpostar");
     b.disabled = true; b.textContent = "A enviar...";
+    let passo = "No envio do ficheiro";
     try {
       const ficheiro = f ? (await API.enviar(f)).ficheiro : null;
+      passo = "Ao publicar";
       await API.post("/api/posts", { texto, ficheiro, hue: +$("mhue").value });
       this.fechar();
       await Feed.carregar();
       Feed.i = 0;
       Feed.desenhar("");
       toast(escolhe(TROLL.postou));
-    } catch (e) { toast(e.message); }
+    } catch (e) { toast(passo + ": " + e.message); }
     b.disabled = false; b.textContent = "Publicar";
   }
 };
